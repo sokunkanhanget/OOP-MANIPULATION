@@ -1,31 +1,82 @@
 class BankAccount {
-    // TODO
+    String _accountNumber;
+    double _balance;
+    String _ownerName;
+    String _accountType;
+    String _currency;
+    bool _isActive;
+
+    BankAccount(this._accountNumber, this._balance, this._ownerName, this._accountType, this._currency, this._isActive);
+
+    double get balance => _balance;
+    double withdraw (double amount) {
+        if (amount <= 0) {
+            throw Exception('Amount must be greater than zero!');
+        }
+        if ( amount > _balance) {
+            throw Exception('You do not have enough balance ');
+        } else if ( amount <= _balance) {
+            _balance -= amount;
+        }
+        return _balance;
+    }
+
+    double credit (double amount) {
+        if (amount <= 0) {
+            throw Exception('Amount must be greater than zero!');
+        }
+        _balance += amount;
+        return _balance;
+    }
+    
 }
 
 class Bank {
-    // TODO
+    String _name;
+    List<BankAccount> _accounts;
+
+    Bank(this._name) : _accounts = [];
+
+    BankAccount createAccount(int accountId, String accountOwner) {
+        if (_accounts.any((account) => account._accountNumber == accountId)) {
+            throw Exception('Account with ID $accountId already exists!');
+        }
+        BankAccount newAccount = BankAccount(
+            accountId.toString(),
+            0.0,
+            accountOwner,
+            'Regular',
+            'USD',
+            true
+        );
+        _accounts.add(newAccount);
+        return newAccount;
+    }
+
 }
  
 void main() {
 
-  // Bank myBank = Bank(name: "CADT Bank");
-  // BankAccount ronanAccount = myBank.createAccount(100, 'Ronan');
+  Bank myBank = Bank("CADT Bank");
+  BankAccount ronanAccount = myBank.createAccount(100, 'Ronan');
 
-  // print(ronanAccount.balance); // Balance: $0
-  // ronanAccount.credit(100);
-  // print(ronanAccount.balance); // Balance: $100
-  // ronanAccount.withdraw(50);
-  // print(ronanAccount.balance); // Balance: $50
+  print('Initial balance: \$${ronanAccount.balance}');
 
-  // try {
-  //   ronanAccount.withdraw(75); // This will throw an exception
-  // } catch (e) {
-  //   print(e); // Output: Insufficient balance for withdrawal!
-  // }
+  ronanAccount.credit(100);
+  print('After credit: \$${ronanAccount.balance}');
 
-  // try {
-  //   myBank.createAccount(100, 'Honlgy'); // This will throw an exception
-  // } catch (e) {
-  //   print(e); // Output: Account with ID 100 already exists!
-  // }
+  ronanAccount.withdraw(50);
+  print('After withdrawal: \$${ronanAccount.balance}');
+
+  try {
+    ronanAccount.withdraw(75);
+  } catch (e) {
+    print(e);
+  }
+
+  try {
+    myBank.createAccount(100, 'Hongly');
+  } catch (e) {
+    print(e);
+  }
 }
